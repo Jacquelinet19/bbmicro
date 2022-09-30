@@ -19,6 +19,8 @@ pub struct Game1 {
     p2w: bool,
     stop_light: StopLight,
     green_light: bool,
+    spr1 : u8,
+    spr2: u8,
     rd_lt_timer: u8,
     valid_move: bool,
 }
@@ -43,6 +45,8 @@ impl Game1 {
                     y: 52.0
                 },
             green_light: false,
+            spr1:8,
+            spr2:9,
             rd_lt_timer: 90,
             valid_move: false,
         }
@@ -72,7 +76,7 @@ impl BBMicroGame for Game1 {
         //Play BGM
         api.music("bgm", 0,0); //Uncomment after adding music.mp3
     }
-
+    
     fn update(&mut self, api: &mut BBMicroApi) {
 
         if !self.p1w && !self.p2w {
@@ -92,6 +96,7 @@ impl BBMicroGame for Game1 {
                 if self.p1x < 155.0{
                     if self.valid_move {
                         self.p1x += 2.0;
+                        if self.spr1 == 8 {self.spr1=24}else {self.spr1=8 };
                     } else {
                         self.p1x -= 10.0;
                     }
@@ -103,6 +108,7 @@ impl BBMicroGame for Game1 {
                 if self.p2x < 155.0 {
                     if self.valid_move {
                         self.p2x += 2.0;
+                        if self.spr2 == 9 {self.spr2=25}else {self.spr2=9 };
                     }
                     else {
                         self.p2x -= 10.0
@@ -153,14 +159,11 @@ impl BBMicroGame for Game1 {
         // Draw map layer 0.
         api.map(0, 0, 0.0, 0.0, 256, 256, 0);
 
-        let spr1 = 8;
-        let spr2 = 9;
 
         api.rect(10.0, 10.0, 20.0, 20.0, 1);
-
         //Makes sprites
-        api.spr(spr1, self.p1x, self.p1y, 8.0, 8.0, false, false);
-        api.spr(spr2, self.p2x, self.p2y, 8.0, 8.0, false, false);
+        api.spr(self.spr1, self.p1x, self.p1y, 8.0, 8.0, false, false);
+        api.spr(self.spr2, self.p2x, self.p2y, 8.0, 8.0, false, false);
 
         //Draw finish line
         api.mset(20, 10, 0, Tiles::FinishLine as u8);
