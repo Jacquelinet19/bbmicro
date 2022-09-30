@@ -18,7 +18,9 @@ pub struct Game1 {
     p1w: bool,
     p2w: bool,
     stop_light: StopLight,
-    green_light: bool
+    green_light: bool,
+    rd_lt_timer: u8,
+    valid_move: bool,
 }
 
 impl Game1 {
@@ -41,6 +43,8 @@ impl Game1 {
                     y: 52.0
                 },
             green_light: false,
+            rd_lt_timer: 90,
+            valid_move: false,
         }
     }
 }
@@ -70,18 +74,39 @@ impl BBMicroGame for Game1 {
     }
 
     fn update(&mut self, api: &mut BBMicroApi) {
+
         if !self.p1w && !self.p2w {
+            
+            if self.rd_lt_timer > 0 {
+                self.rd_lt_timer -= 1;
+                if 90 - self.rd_lt_timer > 15 && self.valid_move {
+                    self.valid_move = false;
+                }
+            } 
+            else {
+            self.green_light = true;
+            self.valid_move = true;
+            }
             //Controls for moving forward
             if api.btn(Button::RIGHT) {
                 if self.p1x < 155.0{
-                    self.p1x += 2.0;
+                    if self.valid_move {
+                        self.p1x += 2.0;
+                    } else {
+                        self.p1x -= 10.0;
+                    }
                 }else{
                     self.p1w = true;
                 }
             }
             if api.btn(Button::D){
                 if self.p2x < 155.0 {
-                    self.p2x += 2.0;
+                    if self.valid_move {
+                        self.p2x += 2.0;
+                    }
+                    else {
+                        self.p2x -= 10.0
+                    }
                 }else{
                     self.p2w = true;
                 }
@@ -89,10 +114,17 @@ impl BBMicroGame for Game1 {
 
             //Controls for turning light red
             if api.btn(Button::LEFT) {
-                self.green_light = false;
+                if self.green_light { 
+                    self.green_light = false;
+                    self.rd_lt_timer = 90;
+                }
+                
             }
             if api.btn(Button::A) {
-                self.green_light = false;
+                if self.green_light {
+                    self.green_light = false;
+                    self.rd_lt_timer = 90;
+                }
             }
             
         } else if api.btnp(Button::A) || api.btnp(Button::D) || api.btnp(Button::LEFT) || api.btnp(Button::RIGHT) {
@@ -104,6 +136,7 @@ impl BBMicroGame for Game1 {
             self.p1w = false;
             self.p2w = false;
             self.green_light = false;
+
         }
 
         
