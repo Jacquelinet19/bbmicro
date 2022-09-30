@@ -47,8 +47,8 @@ impl Game1 {
             green_light: true,
             spr1:8,
             spr2:9,
-            rd_lt_timer: 90,
-            valid_move: false,
+            rd_lt_timer: 0,
+            valid_move: true,
         }
     }
 }
@@ -142,6 +142,8 @@ impl BBMicroGame for Game1 {
             self.p1w = false;
             self.p2w = false;
             self.green_light = true;
+            self.valid_move = true;
+            self.rd_lt_timer = 0;
 
         }
 
