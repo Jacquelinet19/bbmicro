@@ -44,7 +44,7 @@ impl Game1 {
                     x: 100.0,
                     y: 52.0
                 },
-            green_light: false,
+            green_light: true,
             spr1:8,
             spr2:9,
             rd_lt_timer: 90,
@@ -141,7 +141,7 @@ impl BBMicroGame for Game1 {
             self.p2y = 80.0;
             self.p1w = false;
             self.p2w = false;
-            self.green_light = false;
+            self.green_light = true;
 
         }
 
